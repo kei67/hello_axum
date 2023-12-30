@@ -1,5 +1,5 @@
 use axum::{response::Json, routing::get, Router};
-use serde_json::{json, Value};
+use serde::{Deserialize, Serialize};
 
 #[tokio::main]
 async fn main() {
@@ -35,8 +35,19 @@ async fn plain_text() -> &'static str {
   "foo"
 }
 
+#[derive(Serialize, Deserialize)]
+struct Address {
+  street: String,
+  city: String,
+}
+
 // `Json` gives a content-type of `application/json` and works with any type
 // that implements `serde::Serialize`
-async fn json() -> Json<Value> {
-  Json(json!({ "data": 42 }))
+async fn json() -> Json<Address> {
+  let address = Address {
+    street: "10 Downing Street".to_owned(),
+    city: "London".to_owned(),
+  };
+
+  Json(address)
 }
